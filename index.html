@@ -1057,7 +1057,8 @@ footer p {
 </footer>
 
 <script>
-const WEBHOOK = 'https://discord.com/api/webhooks/1513253429542129826/cZvJDbCef5viqS_ziIiekyNDKL5pE6_rkJqW2GinhzJD8JZ_B5Uyu5-50joucNYKM5ue';
+// ✅ URL de tu Cloudflare Worker — el webhook de Discord vive allá, no aquí
+const WORKER_URL = 'segmenta-activacion.watsfock.workers.dev/activar'; // <-- cambia esto después del deploy
 const DRIVE_LINK = null; // Agrega tu link de Google Drive aquí
 
 const PAYMENT_LINKS = {
@@ -1118,29 +1119,11 @@ async function submitForm() {
   btn.disabled = true;
   btn.textContent = 'Enviando…';
 
-  const licLabel = licType.value === 'permanente'
-    ? '🔒 Permanente'
-    : `⏳ Temporal — ${meses} mes${meses > 1 ? 'es' : ''}`;
-
-  const embed = {
-    title: '🆕 Nueva solicitud de activación — Segmenta POS',
-    color: 0x2fcc8b,
-    fields: [
-      { name: '📧 Correo', value: email, inline: true },
-      { name: '🏪 Negocio', value: negocio, inline: true },
-      { name: '🔑 Tipo de licencia', value: licLabel, inline: false },
-      { name: '💻 HWID', value: `\`${hwid}\``, inline: false },
-      { name: '🧾 N° Operación MP', value: operacion, inline: false },
-    ],
-    footer: { text: 'Segmenta · Sistema de activación' },
-    timestamp: new Date().toISOString()
-  };
-
   try {
-    const res = await fetch(WEBHOOK, {
+    const res = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ embeds: [embed] })
+      body: JSON.stringify({ email, negocio, licencia: licType.value, meses, hwid, operacion }),
     });
 
     if (res.ok || res.status === 204) {
