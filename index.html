@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Segmenta — Punto de Venta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #0b0f0e;
+  --surface: #111716;
+  --surface2: #161d1b;
+  --border: #1e2826;
+  --accent: #2fcc8b;
+  --accent2: #1a9e67;
+  --accent-glow: rgba(47,204,139,0.15);
+  --text: #e8f0ec;
+  --text-muted: #7a9489;
+  --text-dim: #4a6358;
+  --danger: #ff5f5f;
+  --gold: #f0c060;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 4rem;
+  background: rgba(11,15,14,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.nav-logo span { color: var(--accent); }
+
+nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+nav a:hover { color: var(--accent); }
+
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+
+.nav-cta {
+  background: var(--accent);
+  color: #000 !important;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600 !important;
+  transition: background 0.2s, transform 0.2s !important;
+}
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px); }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem 2rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-glow {
+  position: absolute;
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(47,204,139,0.12) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -55%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  animation: fadeUp 0.6s ease 0.1s both;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-sub {
+  max-width: 560px;
+  margin: 1.5rem auto 3rem;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-weight: 300;
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.3s both;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.85rem 2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(47,204,139,0.3); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.85rem 2rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+/* ── STATS ── */
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  margin-top: 5rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--border);
+  width: 100%;
+  max-width: 700px;
+  animation: fadeUp 0.6s ease 0.4s both;
+}
+
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  color: var(--accent);
+}
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── SECTIONS GENERAL ── */
+section {
+  padding: 6rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.section-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.section-sub {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 520px;
+  font-weight: 300;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── FEATURES ── */
+#features { background: var(--surface); }
+
+.features-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.features-header .section-sub { margin: 0 auto; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.feature-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+
+.feature-icon {
+  width: 44px; height: 44px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(47,204,139,0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 1.2rem;
+}
+
+.feature-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.feature-card p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ── PRICING ── */
+#precios { background: var(--bg); }
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  position: relative;
+  transition: transform 0.3s;
+}
+.pricing-card:hover { transform: translateY(-6px); }
+
+.pricing-card.featured {
+  border-color: var(--accent);
+  background: linear-gradient(160deg, var(--surface2) 0%, var(--surface) 100%);
+}
+
+.pricing-card.featured::before {
+  content: 'MÁS POPULAR';
+  position: absolute;
+  top: -1px; right: 1.5rem;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.7rem;
+  border-radius: 0 0 6px 6px;
+}
+
+.plan-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.plan-price {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3rem;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.plan-price sup {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.2rem;
+  vertical-align: top;
+  margin-top: 0.6rem;
+  color: var(--text-muted);
+}
+
+.plan-period {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 2rem;
+}
+
+.plan-features {
+  list-style: none;
+  margin-bottom: 2rem;
+}
+.plan-features li {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 300;
+}
+.plan-features li::before { content: '✓'; color: var(--accent); font-weight: 700; }
+
+.btn-plan {
+  width: 100%;
+  padding: 0.9rem;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  text-align: center;
+  display: block;
+  text-decoration: none;
+}
+
+.btn-plan-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-plan-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-plan-solid {
+  background: var(--accent);
+  color: #000;
+}
+.btn-plan-solid:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(47,204,139,0.3); }
+
+/* ── AVISO MERCADO PAGO MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  max-width: 480px;
+  width: 100%;
+  animation: scaleIn 0.25s ease;
+}
+
+.modal-icon {
+  width: 56px; height: 56px;
+  background: rgba(240,192,96,0.12);
+  border: 1px solid rgba(240,192,96,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-box h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.modal-box p {
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.modal-highlight {
+  background: rgba(240,192,96,0.1);
+  border: 1px solid rgba(240,192,96,0.25);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.9rem;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.modal-actions { display: flex; gap: 0.75rem; }
+.modal-cancel {
+  flex: 1;
+  padding: 0.8rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.modal-cancel:hover { border-color: var(--text-muted); color: var(--text); }
+
+.modal-confirm {
+  flex: 2;
+  padding: 0.8rem;
+  background: var(--accent);
+  border: none;
+  color: #000;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.modal-confirm:hover { background: var(--accent2); }
+
+/* ── ACTIVATION FORM ── */
+#activacion { background: var(--surface); }
+
+.activation-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.activation-info h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.2rem;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.activation-info p {
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+}
+
+.info-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.step-num {
+  width: 28px; height: 28px;
+  min-width: 28px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(47,204,139,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 0.1rem;
+}
+
+.step-text {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* ── FORM ── */
+.form-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem;
+}
+
+.form-group { margin-bottom: 1.2rem; }
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--text-dim); }
+
+.form-group select option { background: var(--surface); }
+
+.license-type-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.license-radio {
+  display: none;
+}
+
+.license-label {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-align: center;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.license-label:hover { border-color: var(--accent); }
+.license-radio:checked + .license-label {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  color: var(--accent);
+}
+
+.months-row {
+  display: none;
+}
+.months-row.visible { display: block; }
+
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 0.35rem;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.btn-submit:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(47,204,139,0.3); }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Success state */
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 2rem 0;
+}
+.form-success.visible { display: block; }
+.form-content.hidden { display: none; }
+
+.success-icon {
+  width: 64px; height: 64px;
+  background: var(--accent-glow);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1.5rem;
+  animation: pop 0.4s ease;
+}
+
+.form-success h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.form-success p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--accent-glow);
+  border: 1px solid rgba(47,204,139,0.3);
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  margin: 1rem 0;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem;
+  color: var(--text);
+}
+.footer-logo span { color: var(--accent); }
+
+footer p {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { gap: 1rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  
+  h1 { font-size: 2.8rem; }
+  
+  .hero-stats { gap: 1.5rem; }
+  
+  .activation-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+  
+  section { padding: 4rem 1.5rem; }
+  
+  footer { padding: 2rem 1.5rem; }
+  
+  .modal-box { padding: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Segmenta<span>.</span></div>
+  <div class="nav-links">
+    <a href="#features">Características</a>
+    <a href="#precios">Precios</a>
+    <a href="#activacion">Activación</a>
+    <a href="#activacion" class="nav-cta">Activar licencia</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">Software Punto de Venta</div>
+  <h1>El POS que <em>escala</em><br>con tu inventario</h1>
+  <p class="hero-sub">Segmenta es un sistema de punto de venta diseñado para negocios con catálogos extensos. Organiza miles de productos por categorías, cobra rápido y mantén el control total.</p>
+  <div class="hero-actions">
+    <a href="#precios" class="btn-primary">
+      Ver planes
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#" id="downloadBtn" class="btn-secondary" onclick="handleDownload(event)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M4 7l4 4 4-4M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Descargar software
+    </a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Productos</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">ESC/POS</div>
+      <div class="stat-label">Impresión térmica</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">Local</div>
+      <div class="stat-label">Servidor en tu equipo</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="features-header">
+      <div class="section-tag">Funcionalidades</div>
+      <h2 class="section-title">Todo lo que tu negocio necesita</h2>
+      <p class="section-sub">Pensado para ferreterías, abarrotes, papelerías, refaccionarias y cualquier negocio con catálogos complejos.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📦</div>
+        <h3>Inventario por categorías</h3>
+        <p>Organiza miles de productos en categorías y subcategorías. Busca y cobra en segundos sin importar el tamaño de tu catálogo.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🖨️</div>
+        <h3>Impresión térmica ESC/POS</h3>
+        <p>Compatible con impresoras térmicas estándar. Genera tickets profesionales con tu logo y activa el cajón monedero automáticamente.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h3>Permisos por usuario</h3>
+        <p>Crea cuentas con permisos granulares. Controla quién puede ver, editar o eliminar datos en cada módulo del sistema.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Servidor local en tu equipo</h3>
+        <p>Una vez instalado, el sistema corre de forma local. Solo requiere internet para la instalación inicial y la activación de la licencia.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Reportes de ventas</h3>
+        <p>Consulta el historial de ventas, productos más vendidos y cierre de caja. Información clara para tomar mejores decisiones.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💳</div>
+        <h3>Múltiples formas de pago</h3>
+        <p>Registra cobros en efectivo, transferencia o tarjeta. Calcula cambio al momento y mantén un registro limpio de cada operación.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="precios">
+  <div class="container">
+    <div class="pricing-header">
+      <div class="section-tag">Precios</div>
+      <h2 class="section-title">Elige tu plan</h2>
+      <p class="section-sub" style="margin: 0 auto;">Sin sorpresas, sin suscripciones ocultas. Paga una sola vez o mes a mes según tu presupuesto.</p>
+      <div style="margin-top:1.5rem; display:inline-flex; align-items:center; gap:0.5rem; background:rgba(47,204,139,0.08); border:1px solid rgba(47,204,139,0.25); border-radius:100px; padding:0.45rem 1.2rem; font-size:0.85rem; color:var(--accent); font-weight:500;">
+        🎁 Prueba gratuita de <strong style="margin:0 0.25rem">2 semanas</strong> disponible al descargar
+      </div>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- Mensual -->
+      <div class="pricing-card">
+        <div class="plan-name">Plan Mensual</div>
+        <div class="plan-price"><sup>$</sup>300</div>
+        <div class="plan-period">pesos mexicanos / mes</div>
+        <ul class="plan-features">
+          <li>Acceso completo al software</li>
+          <li>Actualizaciones incluidas</li>
+          <li>Renovación mensual flexible</li>
+          <li>Prueba gratuita 2 semanas</li>
+        </ul>
+        <button class="btn-plan btn-plan-outline" onclick="openModal('mensual')">Seleccionar plan mensual</button>
+      </div>
+
+      <!-- Permanente -->
+      <div class="pricing-card featured">
+        <div class="plan-name">Plan Permanente</div>
+        <div class="plan-price"><sup>$</sup>699</div>
+        <div class="plan-period">pesos mexicanos · pago único</div>
+        <ul class="plan-features">
+          <li>Licencia de por vida</li>
+          <li>Actualizaciones incluidas</li>
+          <li>Sin pagos recurrentes</li>
+          <li>Prueba gratuita 2 semanas</li>
+        </ul>
+        <button class="btn-plan btn-plan-solid" onclick="openModal('permanente')">Obtener licencia permanente</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MODAL AVISO -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <div class="modal-icon">💳</div>
+    <h3>Antes de continuar al pago</h3>
+    <p>Serás redirigido a <strong>Mercado Pago</strong> para completar tu pago de forma segura.</p>
+    <div class="modal-highlight">
+      📋 <strong>Importante:</strong> Al finalizar el pago, Mercado Pago te mostrará un <strong>número de operación</strong>. Guárdalo, lo necesitarás para activar tu licencia en la siguiente sección.
+    </div>
+    <p style="font-size:0.82rem; color: var(--text-dim);">Después de pagar, regresa a esta página y llena el formulario de activación con ese número.</p>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancelar</button>
+      <a href="#" id="modalPayLink" target="_blank" class="modal-confirm" onclick="closeModal()">
+        Ir a pagar →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVATION -->
+<section id="activacion">
+  <div class="activation-wrap">
+    <div class="activation-info">
+      <div class="section-tag">Activación</div>
+      <h2>Activa tu licencia en minutos</h2>
+      <p>Una vez realizado tu pago en Mercado Pago, llena el formulario y en un lapso de <strong style="color:var(--accent)">30 minutos a 2 horas</strong> recibirás tu licencia por correo electrónico.</p>
+
+      <div class="info-step">
+        <div class="step-num">1</div>
+        <div class="step-text">Realiza tu pago por Mercado Pago usando los botones de la sección de precios.</div>
+      </div>
+      <div class="info-step">
+        <div class="step-num">2</div>
+        <div class="step-text">Copia el <strong style="color:var(--text)">número de operación</strong> que aparece en tu comprobante de Mercado Pago.</div>
+      </div>
+      <div class="info-step">
+        <div class="step-num">3</div>
+        <div class="step-text">Instala el software y ábrelo. En la pantalla de activación, el programa te mostrará tu <strong style="color:var(--text)">HWID</strong> de forma automática con un botón para copiarlo fácilmente.</div>
+      </div>
+      <div class="info-step">
+        <div class="step-num">4</div>
+        <div class="step-text">Llena el formulario y espera tu licencia por correo. En caso de que algún dato no coincida, se realizará contacto al correo proporcionado para cuadrar la información.</div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-content" id="formContent">
+        <div class="form-group">
+          <label>Correo electrónico de contacto</label>
+          <input type="email" id="email" placeholder="correo@ejemplo.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre del negocio</label>
+          <input type="text" id="negocio" placeholder="Mi Tienda S.A. de C.V." required>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de licencia</label>
+          <div class="license-type-group">
+            <input type="radio" name="licencia" id="lic-permanente" value="permanente" class="license-radio" onchange="toggleMonths()">
+            <label for="lic-permanente" class="license-label">Permanente</label>
+
+            <input type="radio" name="licencia" id="lic-temporal" value="temporal" class="license-radio" onchange="toggleMonths()">
+            <label for="lic-temporal" class="license-label">Temporal</label>
+          </div>
+        </div>
+
+        <div class="form-group months-row" id="monthsRow">
+          <label>Cantidad de meses</label>
+          <select id="meses">
+            <option value="">Seleccionar...</option>
+            <option value="1">1 mes</option>
+            <option value="2">2 meses</option>
+            <option value="3">3 meses</option>
+            <option value="4">4 meses</option>
+            <option value="5">5 meses</option>
+            <option value="6">6 meses</option>
+            <option value="7">7 meses</option>
+            <option value="8">8 meses</option>
+            <option value="9">9 meses</option>
+            <option value="10">10 meses</option>
+            <option value="11">11 meses</option>
+            <option value="12">12 meses</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>HWID del equipo</label>
+          <input type="text" id="hwid" placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" required>
+          <div class="form-hint">El programa te muestra tu HWID automáticamente en la pantalla de activación. Cópialo desde ahí.</div>
+        </div>
+
+        <div class="form-group">
+          <label>Número de operación (Mercado Pago)</label>
+          <input type="text" id="operacion" placeholder="Ej. 12345678901" required>
+          <div class="form-hint">Aparece en tu comprobante de pago de Mercado Pago.</div>
+        </div>
+
+        <button class="btn-submit" id="submitBtn" onclick="submitForm()">Enviar solicitud de activación</button>
+      </div>
+
+      <div class="form-success" id="formSuccess">
+        <div class="success-icon">✓</div>
+        <h3>¡Solicitud enviada!</h3>
+        <div class="time-badge">⏱ 30 min – 2 horas</div>
+        <p>Recibirás tu licencia en el correo electrónico proporcionado dentro de ese lapso. Revisa también tu carpeta de spam.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Segmenta<span>.</span> Punto de Venta</div>
+  <p>© 2025 Segmenta. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+const WEBHOOK = 'https://discord.com/api/webhooks/1513253429542129826/cZvJDbCef5viqS_ziIiekyNDKL5pE6_rkJqW2GinhzJD8JZ_B5Uyu5-50joucNYKM5ue';
+const DRIVE_LINK = null; // Agrega tu link de Google Drive aquí
+
+const PAYMENT_LINKS = {
+  mensual: 'https://mpago.la/1D9daTW',
+  permanente: 'https://mpago.la/2AHeKbR'
+};
+
+let currentPlan = null;
+
+function openModal(plan) {
+  currentPlan = plan;
+  document.getElementById('modalPayLink').href = PAYMENT_LINKS[plan];
+  document.getElementById('payModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('payModal').classList.remove('active');
+}
+
+document.getElementById('payModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function toggleMonths() {
+  const temporal = document.getElementById('lic-temporal').checked;
+  const row = document.getElementById('monthsRow');
+  row.classList.toggle('visible', temporal);
+}
+
+function handleDownload(e) {
+  e.preventDefault();
+  if (DRIVE_LINK) {
+    window.open(DRIVE_LINK, '_blank');
+  } else {
+    alert('El enlace de descarga estará disponible próximamente. ¡Gracias por tu interés!');
+  }
+}
+
+async function submitForm() {
+  const email = document.getElementById('email').value.trim();
+  const negocio = document.getElementById('negocio').value.trim();
+  const hwid = document.getElementById('hwid').value.trim();
+  const operacion = document.getElementById('operacion').value.trim();
+  const licType = document.querySelector('input[name="licencia"]:checked');
+  const meses = document.getElementById('meses').value;
+
+  if (!email || !negocio || !hwid || !operacion || !licType) {
+    alert('Por favor completa todos los campos requeridos.');
+    return;
+  }
+
+  if (licType.value === 'temporal' && !meses) {
+    alert('Por favor selecciona la cantidad de meses.');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  const licLabel = licType.value === 'permanente'
+    ? '🔒 Permanente'
+    : `⏳ Temporal — ${meses} mes${meses > 1 ? 'es' : ''}`;
+
+  const embed = {
+    title: '🆕 Nueva solicitud de activación — Segmenta POS',
+    color: 0x2fcc8b,
+    fields: [
+      { name: '📧 Correo', value: email, inline: true },
+      { name: '🏪 Negocio', value: negocio, inline: true },
+      { name: '🔑 Tipo de licencia', value: licLabel, inline: false },
+      { name: '💻 HWID', value: `\`${hwid}\``, inline: false },
+      { name: '🧾 N° Operación MP', value: operacion, inline: false },
+    ],
+    footer: { text: 'Segmenta · Sistema de activación' },
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    const res = await fetch(WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] })
+    });
+
+    if (res.ok || res.status === 204) {
+      document.getElementById('formContent').classList.add('hidden');
+      document.getElementById('formSuccess').classList.add('visible');
+    } else {
+      throw new Error('Webhook error: ' + res.status);
+    }
+  } catch (err) {
+    alert('Ocurrió un error al enviar. Por favor intenta de nuevo en unos minutos.');
+    btn.disabled = false;
+    btn.textContent = 'Enviar solicitud de activación';
+  }
+}
+</script>
+
+</body>
+</html>
